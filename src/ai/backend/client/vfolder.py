@@ -1,7 +1,6 @@
 import asyncio
 from pathlib import Path
 from typing import Sequence, Union
-import zlib
 
 import aiohttp
 from tqdm import tqdm
