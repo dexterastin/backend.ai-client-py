@@ -35,6 +35,16 @@ class Auth:
 
     @api_function
     @classmethod
+    async def login_check(cls) -> dict:
+        """
+        Login Check
+        """
+        rqst = Request(cls.session, 'POST', '/server/login-check')
+        async with rqst.fetch() as resp:
+            return await resp.json()
+
+    @api_function
+    @classmethod
     async def logout(cls) -> None:
         '''
         Log-out from the endpoint.
