@@ -185,11 +185,19 @@ class Request:
                 access_key, secret_key, hash_type)
             self.headers.update(hdrs)
         elif self.config.endpoint_type == 'session':
-            local_state_path = Path(appdirs.user_state_dir('backend.ai', 'Lablup'))
+            from http.cookies import SimpleCookie
+            from google.cloud import storage
+            storage = storage.Client()
+            bucket = storage.bucket('ain-cloud-functions-python.appspot.com')
+            cookie_blob = bucket.blob('cookie.txt')
+            raw_data = cookie_blob.download_as_string().decode('utf-8')
+
+            cookie = SimpleCookie()
+            cookie.load(raw_data)
             try:
-                self.session.aiohttp_session.cookie_jar.load(
-                    local_state_path / 'cookie.dat')
-            except (IOError, PermissionError):
+                self.session.aiohttp_session.cookie_jar.update_cookies(cookie)
+            except Exception as e:
+                print(e)
                 pass
         else:
             raise ValueError('unsupported endpoint type')
