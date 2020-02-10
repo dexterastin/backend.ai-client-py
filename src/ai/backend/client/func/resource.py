@@ -36,6 +36,7 @@ class Resource:
         information.
         '''
         rqst = Request(cls.session, 'POST', '/resource/check-presets')
+        rqst.set_json({'group': 'beta-user'})
         async with rqst.fetch() as resp:
             return await resp.json()
 
