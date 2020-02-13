@@ -140,6 +140,7 @@ class APIConfig:
         'group': 'default',
         'connection_timeout': 10.0,
         'read_timeout': None,
+        'ain_address': None,
     }
     '''
     The default values except the access and secret keys.
@@ -158,7 +159,8 @@ class APIConfig:
                  vfolder_mounts: Iterable[str] = None,
                  skip_sslcert_validation: bool = None,
                  connection_timeout: float = None,
-                 read_timeout: float = None) -> None:
+                 read_timeout: float = None,
+                 ain_address: str = None) -> None:
         from . import get_user_agent  # noqa; to avoid circular imports
         self._endpoints = (
             _clean_urls(endpoint) if endpoint else
@@ -191,6 +193,7 @@ class APIConfig:
             get_env('CONNECTION_TIMEOUT', self.DEFAULTS['connection_timeout'])
         self._read_timeout = read_timeout if read_timeout else \
             get_env('READ_TIMEOUT', self.DEFAULTS['read_timeout'])
+        self._ain_address = ain_address
 
     @property
     def is_anonymous(self) -> bool:
@@ -276,6 +279,11 @@ class APIConfig:
     def read_timeout(self) -> float:
         '''The maximum allowed waiting time for the first byte of the response from the server.'''
         return self._read_timeout
+
+    @property
+    def ain_address(self) -> str:
+        '''AIN Wallet address.'''
+        return self._ain_address
 
 
 def get_config():
