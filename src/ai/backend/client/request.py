@@ -186,16 +186,16 @@ class Request:
             self.headers.update(hdrs)
         elif self.config.endpoint_type == 'session':
             from http.cookies import SimpleCookie
-            from google.cloud import storage
-            storage = storage.Client()
-            bucket = storage.bucket('ain-cloud-functions-python.appspot.com')
-            cookie_blob = bucket.blob('cookie.txt')
-            raw_data = cookie_blob.download_as_string().decode('utf-8')
+            from google.cloud import firestore, exceptions
+            addr = self.config.ain_address
+            db = firestore.Client()
+            bai_doc = db.collection("backendai").document(addr)
+            account = bai_doc.get().to_dict()
 
-            cookie = SimpleCookie()
-            cookie.load(raw_data)
+            cookies = SimpleCookie()
+            cookies.load(account["cookies"])
             try:
-                self.session.aiohttp_session.cookie_jar.update_cookies(cookie)
+                self.session.aiohttp_session.cookie_jar.update_cookies(cookies)
             except Exception as e:
                 print(e)
                 pass
